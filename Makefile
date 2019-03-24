@@ -2,7 +2,7 @@ CC=clang
 PROGRAM=ananas
 MAIN=src/main.c
 DIST=dist/$(PROGRAM)
-CFLAGS=$(MAIN) --std=c11 -Wall -Werror -o $(DIST)
+CFLAGS=$(MAIN) -O3 --std=c11 -Wall -Werror -o $(DIST)
 
 .PHONY: debug
 
