@@ -15,3 +15,6 @@ debug:
 
 run: default
 	./$(DIST)
+
+clean:
+	rm ./$(DIST)
