@@ -1,5 +1,7 @@
 #include <vector.h>
+#include <util.h>
 
+#include <assert.h>
 #include <memory.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -23,13 +25,17 @@ Vector* Vector_new(void) {
   return vector;
 }
 
-void Vector_delete(Vector* self) {
+void Vector_delete(Vector** selfPointer) {
+  Vector* self = *selfPointer;
+  assert(self != NULL);
   assert(self->buffer != NULL);
 
   free(self->buffer);
   self->buffer = NULL;
   self->size = 0;
   self->capacity = 0;
+
+  freeSelfPointer((void**) selfPointer);
 }
 
 void Vector_pushBack(Vector* self, void* object) {
@@ -48,6 +54,10 @@ void* Vector_get(Vector* self, int index) {
   return NULL;
 }
 
+bool Vector_empty(Vector* self) {
+  return !!self->size;
+}
+
 static inline bool hasEnoughSpace(Vector* self) {
   return self->size < self->capacity;
 }
@@ -57,9 +67,9 @@ static void expandVector(Vector* self) {
   int oldSize = self->size;
   void** oldBuffer = self->buffer;
   int newCapacity = oldCapacity * VECTOR_EXPAND_FACTOR;
-  int newSize = oldSize;
   void** newBuffer = malloc(sizeof(void*) * newCapacity);
 
+  free(oldBuffer);
   memcpy(newBuffer, oldBuffer, sizeof(void*) * oldSize);
 
   self->buffer = newBuffer;

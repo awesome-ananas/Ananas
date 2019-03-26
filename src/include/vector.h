@@ -1,6 +1,8 @@
 #ifndef __VECTOR_H
 #define __VECTOR_H
 
+#include <stdbool.h>
+
 
 typedef struct __Vector {
   void** buffer;
@@ -9,8 +11,9 @@ typedef struct __Vector {
 } Vector;
 
 Vector* Vector_new(void);
-void Vector_delete(Vector* self);
+void Vector_delete(Vector** selfPointer);
 void Vector_pushBack(Vector* self, void* object);
 void* Vector_get(Vector* self, int index);
+bool Vector_empty(Vector* self);
 
 #endif
