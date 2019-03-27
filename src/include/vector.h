@@ -13,6 +13,7 @@ typedef struct __Vector {
 Vector* Vector_new(void);
 void Vector_delete(Vector** selfPointer);
 void Vector_pushBack(Vector* self, void* object);
+void* Vector_popBack(Vector* self);
 void* Vector_get(Vector* self, int index);
 bool Vector_empty(Vector* self);
 

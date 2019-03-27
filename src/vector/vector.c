@@ -13,8 +13,10 @@ static const int VECTOR_EXPAND_FACTOR = 2;
 static inline bool hasEnoughSpace(Vector* self);
 static void expandVector(Vector* self);
 static void pushBackChecked(Vector* self, void* object);
+static void* popBackChecked(Vector* self);
 static inline bool accessibleIndex(Vector* self, int index);
 static void* getChecked(Vector* self, int index);
+static inline bool isPopable(Vector* self);
 
 Vector* Vector_new(void) {
   Vector* vector = malloc(sizeof(Vector));
@@ -44,6 +46,14 @@ void Vector_pushBack(Vector* self, void* object) {
   }
 
   pushBackChecked(self, object);
+}
+
+void* Vector_popBack(Vector* self) {
+  if (isPopable(self)) {
+    return popBackChecked(self);
+  }
+
+  return NULL;
 }
 
 void* Vector_get(Vector* self, int index) {
@@ -85,10 +95,21 @@ static void pushBackChecked(Vector* self, void* object) {
   self->size++;
 }
 
+static void* popBackChecked(Vector* self) {
+  void* oldObject = self->buffer[self->size];
+  self->size--;
+
+  return oldObject;
+}
+
 static inline bool accessibleIndex(Vector* self, int index) {
   return index < self->size && index >= 0;
 }
 
 static void* getChecked(Vector* self, int index) {
   return self->buffer[index];
+}
+
+static inline bool isPopable(Vector* self) {
+  return self->size > 0;
 }
