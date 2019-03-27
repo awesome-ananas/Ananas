@@ -1,6 +1,5 @@
 #include <error.h>
 #include <parse.h>
-#include <stack.h>
 
 #include <ctype.h>
 #include <stdbool.h>
@@ -32,7 +31,7 @@ static inline void increaseColumn(int increasing);
 static inline void clearColumn(void);
 static inline bool isLinuxNewline(int c);
 static inline bool isWindowsNewline(int c);
-static inline void consumeCarriageReturn(void);
+static inline void consumeLineFeed(void);
 static inline bool isNextFloatingPoint(void);
 static int peek(void);
 static void skipBlank(int blankCharacter);
@@ -63,7 +62,7 @@ void Parser_clear(void) {
 
 ASTNode* Parser_parseExpression(void) {
   for (;;) {
-    int c = getchar(); // TODO: peek로 변경하기
+    int c = getchar();
     
     if (isspace(c)) 
     {
@@ -76,7 +75,7 @@ ASTNode* Parser_parseExpression(void) {
     else if (c == ';') 
     {
       skipLine();
-    } 
+    }
     else if (c == '(') 
     {
       return parseList();
@@ -142,7 +141,7 @@ static inline bool isWindowsNewline(int c) {
   return c == '\r' && nextChar == '\n';
 }
 
-static inline void consumeCarriageReturn(void) {
+static inline void consumeLineFeed(void) {
   getchar();
 }
 
@@ -159,7 +158,7 @@ static int peek(void) {
 
 static void skipBlank(int blankCharacter) {
   if (isWindowsNewline(blankCharacter)) {
-    consumeCarriageReturn(); // TODO: 이름 바꾸기
+    consumeLineFeed();
     clearColumn();
     increaseLine(1);
   } else if (isLinuxNewline(blankCharacter)) {
