@@ -14,12 +14,14 @@ int main(void) {
     ASTNode* node = Parser_parseExpression();
     if (Parser_isEOFNode(node)) {
       break;
+    } else {
+      printf("Node received: %d\n", node->nodeType);
     }
     Error_clear();
   }
 
   quit();
-  
+
   return 0;
 }
 
@@ -28,5 +30,6 @@ void init(void) {
 }
 
 void quit(void) {
+  Parser_clear();
   Error_clear();
 }
