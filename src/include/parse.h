@@ -38,16 +38,17 @@ typedef struct __NodeData {
 
 typedef struct __Node {
   NodeType nodeType;
-  NodeMetadata nodeMetadata;
-  struct __Node* parent;
+  NodeMetadata* nodeMetadata;
   Vector* children;
   NodeData* nodeData;
 } ASTNode;
 
+NodeMetadata* NodeMetadata_new(int line, int column, int tokenStringLength);
+void NodeMetadata_delete(NodeMetadata** selfPointer);
 
 void Parser_init(void);
+void Parser_clear(void);
 ASTNode* Parser_parseExpression(void);
-
 bool Parser_isEOFNode(ASTNode* node);
 
 
