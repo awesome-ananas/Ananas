@@ -6,7 +6,7 @@
 void init(void);
 void quit(void);
 
-int main(void) {
+int main(void) { /* REPL */
   init();
 
   for (;;) {
