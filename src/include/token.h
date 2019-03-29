@@ -9,6 +9,7 @@ typedef enum
     Tokentype_FLOATING,
     Tokentype_STRING,
     Tokentype_IDENT,
+    Tokentype_CON
 } Tokentype;
 
 typedef union
@@ -17,10 +18,17 @@ typedef union
     double floating;
     char *string;
     char *symbol;
+    char *comment;
 } Literal;
 
 typedef struct
 {
+    int row, colum;
+} Tokenmeta; 
+
+typedef struct
+{
+    Tokenmeta metadata;
     Tokentype type;
     Literal value;
 } Token;

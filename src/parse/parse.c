@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 static int line = 0;
 static int column = 0;
 
@@ -22,7 +21,8 @@ static ASTNode* const EOF_NODE = &(ASTNode) {
   NULL,
 };
 
-static const int NUMBER_STRING_LENGTH = 256;
+//static const int NUMBER_STRING_ENGTH = 256;
+enum { NUMBER_STRING_LENGTH = 256 };
 static const int DOT_LENGTH = 1;
 static const char* const SYMBOL_SET = "~!@#$%^&*-_=+:/?<>";
 
@@ -85,7 +85,7 @@ ASTNode* Parser_parseExpression(void) {
       increaseColumn(1);
       raiseUnexpectedTokenError(")");
     } 
-    else if (c == '.') 
+    else if (c == '.')
     {
       increaseColumn(1);
       return generateDot();
@@ -227,7 +227,7 @@ static int getIntegerPart(void) {
   } 
   while (isdigit(peek()));
   int length = index;
-  int number = strtol(numberBuffer, numberBuffer + length, 10);
+  int number = strtol(numberBuffer, NULL, 10);
 
   increaseColumn(length);
 
@@ -252,7 +252,7 @@ static ASTNode* generateNode(NodeType nodeType, NodeMetadata* metadata, NodeData
 }
 
 static ASTNode* generateDot(void) {
-  ASTNode* generatedNode = malloc(sizeof(ASTNode));
+ //  ASTNode* generatedNode = malloc(sizeof(ASTNode));
   NodeData* nodeData = malloc(sizeof(NodeData));
   NodeMetadata* metadata = NodeMetadata_new(line, column, DOT_LENGTH);
 
@@ -282,9 +282,9 @@ static ASTNode* generateFloatingPoint(int integerPart, int floatingPointPart) {
 
 static double twoIntegersToDouble(int integerPart, int floatingPointPart) {
   char buffer[NUMBER_STRING_LENGTH * 2 + DOT_LENGTH];
-  int integerPartLength = getDigitCount(integerPart);
-  int floatingPointPartLength = getDigitCount(floatingPointPart);
-  int fullLength = integerPartLength + DOT_LENGTH + floatingPointPartLength;
+  // int integerPartLength = getDigitCount(integerPart);
+  // int floatingPointPartLength = getDigitCount(floatingPointPart);
+  // int fullLength = integerPartLength + DOT_LENGTH + floatingPointPartLength;
 
   sprintf(buffer, "%d.%d", integerPart, floatingPointPart);
 

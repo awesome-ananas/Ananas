@@ -7,20 +7,20 @@ void init(void);
 void quit(void);
 
 int main(void) { /* REPL */
-  init();
+//   init();
 
-  for (;;) {
-    Error_init();
-    ASTNode* node = Parser_parseExpression();
-    if (Parser_isEOFNode(node)) {
-      break;
-    } else {
-      printf("Node received: %d\n", node->nodeType);
-    }
-    Error_clear();
-  }
+//   for (;;) {
+//     Error_init();
+//     ASTNode* node = Parser_parseExpression();
+//     if (Parser_isEOFNode(node)) {
+//       break;
+//     } else {
+//       printf("Node received: %d\n", node->nodeType);
+//     }
+//     Error_clear();
+//   }
 
-  quit();
+//   quit();
 
   return 0;
 }

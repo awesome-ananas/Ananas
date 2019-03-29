@@ -2,13 +2,19 @@
 #define __LEXER_H
 
 #include "token.h"
-#include "vector.h"
+#include "tokenlist.h"
+#include <unistd.h>
 
 typedef struct
 {
     char *code;
-    size_t index;
-    Vector *tokens;
+    int index;
+    int row, colum;
+    TokenList tokens;
 } Lexer;
+
+Lexer *Lexer_new(char *_code);
+void Lexer_lex(Lexer *self);
+void Lexer_delete(Lexer *self);
 
 #endif
