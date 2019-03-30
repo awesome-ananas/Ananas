@@ -19,7 +19,8 @@ typedef union __TokenValue
     int integer;
     double floating;
     char *string;
-    char * symbol;
+    char *symbol;
+    char *comment;
 } TokenValue;
 
 typedef struct __Token

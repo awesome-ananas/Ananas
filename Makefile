@@ -1,7 +1,6 @@
 CC = gcc
 CCFLAG = -Wall --std=c11
 PROGRAM = ananas
-OBJECTS = main.o
 SRC_PATH = src
 OBJ_PATH = obj
 
