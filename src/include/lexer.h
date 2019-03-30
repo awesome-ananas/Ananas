@@ -3,7 +3,6 @@
 
 typedef struct __Lexer
 {
-
 } Lexer;
 
 Lexer *Lexer_new(void);
