@@ -1,6 +1,5 @@
 #include "include/tokenlist.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -21,7 +20,6 @@ cleanup:
     if(node != NULL)
         free(node);
 
-    fprintf(stderr, "TokenNode_new failed\n");
     return NULL;
 }
 
@@ -47,7 +45,6 @@ cleanup:
     if(list != NULL)
         free(list);
 
-    fprintf(stderr, "TokenNode_delete failed\n");
     return NULL;
 }
 
@@ -88,7 +85,6 @@ cleanup:
     if(node != NULL)
         TokenNode_delete(node);
 
-    fprintf(stderr, "TokenList_add failed\n");
     return 0;
 }
 
