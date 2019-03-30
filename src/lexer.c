@@ -7,11 +7,11 @@
 #include <ctype.h>
 #include <string.h>
 
-static const Token Token_LPARN = {TokenType_LPARN, {0}};
-static const Token Token_RPARN = {TokenType_RPARN, {0}};
-static const Token Token_CONS = {TokenType_CONS, {0}};
-static const Token Token_LIST = {TokenType_LIST, {0}};
-static const Token Token_EOF = {TokenType_EOF, {0}};
+static const Token Token_LPARN = {(enum __TokenType)TokenType_LPARN, {0}};
+static const Token Token_RPARN = {(enum __TokenType)TokenType_RPARN, {0}};
+static const Token Token_CONS = {(enum __TokenType)TokenType_CONS, {0}};
+static const Token Token_LIST = {(enum __TokenType)TokenType_LIST, {0}};
+static const Token Token_EOF = {(enum __TokenType)TokenType_EOF, {0}};
 
 static inline char Lexer_peek(Lexer *self);
 static inline char Lexer_pop(Lexer *self);
@@ -23,6 +23,7 @@ static void Lexer_spaceConsume(Lexer *self);
 static void Lexer_newlineConsume(Lexer *self);
 static int Lexer_isWhitespace(Lexer *self);
 static int Lexer_isNewline(Lexer *self);
+static void Lexer_eat(Lexer *self, char expect);
 
 Lexer *Lexer_new(char *_code)
 {
@@ -106,7 +107,7 @@ void Lexer_lex(Lexer *self)
         }
         else
         {
-            fprintf(stderr, "%c is unreconiged\n", peek);
+            fprintf(stderr, "unreconiged input: %c\n", peek);
             break;
         }
     }
@@ -119,7 +120,7 @@ static inline char Lexer_peek(Lexer *self)
 
 static inline char Lexer_pop(Lexer *self)
 {
-    // putchar(self->code[self->index]);
+    putchar(self->code[self->index]);
     return self->code[self->index++];
 }
 
@@ -148,7 +149,7 @@ static void Lexer_lexNumber(Lexer *self)
             {
                 if(isfloating == 1)
                 {
-                    // make an error
+                    fprintf(stderr, "Expected digits, but dot\n");
                 }
                 else
                     isfloating = 1;
@@ -174,9 +175,41 @@ static void Lexer_lexNumber(Lexer *self)
 }
 static void Lexer_lexString(Lexer *self)
 {
+    int i=0;
+    char c;
+    Token _token;
+    memset(&_token, 0, sizeof(Token));
+    _token.type = TokenType_STRING;
+    
+    Lexer_pop(self);
+    while((c = Lexer_peek(self)) != '\"')
+    {
+        _token.value.string[i++] = c;
+        Lexer_pop(self);
+    }
+    Lexer_pop(self);
+
+    TokenList_add(self->tokens, _token);
 }
 static void Lexer_lexSymbol(Lexer *self)
 {
+    int i=0;
+    char c;
+    Token _token;
+    memset(&_token, 0, sizeof(Token));
+    _token.type = TokenType_SYMBOL;
+    
+    while(1)
+    {
+        c = Lexer_peek(self);
+        if((c != '_') && (!isalnum(c)))
+            break;
+
+        _token.value.symbol[i++] = c;
+        Lexer_pop(self);
+    }
+
+    TokenList_add(self->tokens, _token);
 }
 static void Lexer_spaceConsume(Lexer *self)
 {
@@ -197,4 +230,16 @@ static int Lexer_isNewline(Lexer *self)
 {
     const char peek = Lexer_peek(self);
     return (peek == '\n') || (peek == '\r');
+}
+static void Lexer_eat(Lexer *self, char expect)
+{
+    char real = Lexer_peek(self);
+    if(real!=expect)
+    {
+        fprintf(stderr, "Expect=%c, Real=%c\n", expect, real);
+    }
+    else
+    {
+        Lexer_pop(self);
+    }
 }

@@ -1,25 +1,28 @@
 #ifndef __TOKEN_H
 #define __TOKEN_H
 
+#define MAX_STRING (0xFF)
+#define MAX_SYMBOL (0xFF)
+
 typedef enum __TokenType
 {
     TokenType_INTEGER,
     TokenType_FLOATING,
     TokenType_STRING,
     TokenType_SYMBOL,
-    TokenType_LPARN,   /* ( */
-    TokenType_RPARN,   /* ) */
-    TokenType_CONS,    /* : */
-    TokenType_COMMENT, /* ; */
-    TokenType_LIST,     /* ' */
+    TokenType_LPARN, /* ( */
+    TokenType_RPARN,      /* ) */
+    TokenType_CONS,       /* : */
+    TokenType_LIST,       /* ' */
     TokenType_EOF
 } TokenType;
 
-typedef union __TokenValue {
+typedef union __TokenValue
+{
     int integer;
     double floating;
-    char *string;
-    char *symbol;
+    char string[MAX_STRING];
+    char symbol[MAX_SYMBOL];
 } TokenValue;
 
 typedef struct __Token
