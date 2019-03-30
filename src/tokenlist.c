@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-TokenNode *TokenNode_new(TokenType _type, TokenValue _value)
+TokenNode *TokenNode_new(TokenType _type, TokenValue _value, Metadata _metadata)
 {
     TokenNode *node;
     Token _token = { _type, _value };
@@ -13,7 +13,8 @@ TokenNode *TokenNode_new(TokenType _type, TokenValue _value)
     
     node->next = NULL;
     node->token = _token;
-
+    node->metadata = _metadata;
+    
     return node;
 
 cleanup:
@@ -62,10 +63,10 @@ void TokenList_delete(TokenList *list)
     free(list);
 }
 
-int TokenList_add(TokenList *list, Token token)
+int TokenList_add(TokenList *list, Token token, Metadata metadata)
 {
     TokenNode *node;
-    if((node = TokenNode_new(token.type, token.value)) == NULL)
+    if((node = TokenNode_new(token.type, token.value, metadata)) == NULL)
         goto cleanup;
 
     if(list->head == NULL)

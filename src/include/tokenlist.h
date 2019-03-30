@@ -3,12 +3,14 @@
 
 #include "token.h"
 
+#include "metadata.h"
 #include <stdlib.h>
 
 typedef struct __TokenNode
 {
     struct __TokenNode *next;
     Token token;
+    Metadata metadata;
 } TokenNode;
 
 typedef struct __TokenList
@@ -17,13 +19,12 @@ typedef struct __TokenList
     int length;
 } TokenList;
 
-
-TokenNode *TokenNode_new(TokenType _type, TokenValue _value);
+TokenNode *TokenNode_new(TokenType _type, TokenValue _value, Metadata _metadata);
 void TokenNode_delete(TokenNode *node);
 
 TokenList *TokenList_new(void);
 void TokenList_delete(TokenList *list);
-int TokenList_add(TokenList *list, Token token);
+int TokenList_add(TokenList *list, Token token, Metadata metadata);
 int TokenList_remove(TokenList *list, Token token);
 
 #endif

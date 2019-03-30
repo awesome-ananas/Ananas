@@ -11,14 +11,13 @@ typedef enum __TokenType
     TokenType_STRING,
     TokenType_SYMBOL,
     TokenType_LPARN, /* ( */
-    TokenType_RPARN,      /* ) */
-    TokenType_CONS,       /* : */
-    TokenType_LIST,       /* ' */
+    TokenType_RPARN, /* ) */
+    TokenType_CONS,  /* : */
+    TokenType_LIST,  /* ' */
     TokenType_EOF
 } TokenType;
 
-typedef union __TokenValue
-{
+typedef union __TokenValue {
     int integer;
     double floating;
     char string[MAX_STRING];
