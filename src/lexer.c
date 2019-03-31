@@ -12,6 +12,7 @@ static const Token Token_RPARN = {(enum __TokenType)TokenType_RPARN, {0}};
 static const Token Token_CONS = {(enum __TokenType)TokenType_CONS, {0}};
 static const Token Token_LIST = {(enum __TokenType)TokenType_LIST, {0}};
 static const Token Token_EOF = {(enum __TokenType)TokenType_EOF, {0}};
+static const char *const SYMBOL_SET = "+-/*\%=?!_#";
 
 static inline char Lexer_peek(Lexer *self);
 static inline char Lexer_pop(Lexer *self);
@@ -23,6 +24,8 @@ static void Lexer_spaceConsume(Lexer *self);
 static void Lexer_newlineConsume(Lexer *self);
 static int Lexer_isWhitespace(Lexer *self);
 static int Lexer_isNewline(Lexer *self);
+static int Lexer_isSymbolCharacter(Lexer *self);
+static int Lexer_isFirstSymbolCharacter(Lexer *self);
 static Metadata Lexer_getMetadata(Lexer *self);
 
 Lexer *Lexer_new(char *_code)
@@ -33,6 +36,7 @@ Lexer *Lexer_new(char *_code)
     if ((lexer->tokens = TokenList_new()) == NULL)
         goto cleanup;
 
+    lexer->row = 1;
     lexer->code = _code;
     return lexer;
 
@@ -101,7 +105,7 @@ void Lexer_lex(Lexer *self)
         {
             Lexer_lexString(self);
         }
-        else if (isalpha(peek) || peek == '_')
+        else if (Lexer_isFirstSymbolCharacter(self))
         {
             Lexer_lexSymbol(self);
         }
@@ -124,7 +128,7 @@ static inline char Lexer_pop(Lexer *self)
     if (Lexer_isNewline(self))
     {
         self->row++;
-        self->colum = 0;
+        self->colum = 1;
     }
     else
         self->colum++;
@@ -185,8 +189,7 @@ static void Lexer_lexString(Lexer *self)
 {
     int i = 0;
     char c;
-    Token _token;
-    memset(&_token, 0, sizeof(Token));
+    Token _token = {0, };
     _token.type = TokenType_STRING;
 
     Lexer_pop(self);
@@ -202,20 +205,11 @@ static void Lexer_lexString(Lexer *self)
 static void Lexer_lexSymbol(Lexer *self)
 {
     int i = 0;
-    char c;
-    Token _token;
-    memset(&_token, 0, sizeof(Token));
+    Token _token = {0, };
     _token.type = TokenType_SYMBOL;
 
-    while (1)
-    {
-        c = Lexer_peek(self);
-        if ((c != '_') && (!isalnum(c)))
-            break;
-
-        _token.value.symbol[i++] = c;
-        Lexer_pop(self);
-    }
+    while (Lexer_isSymbolCharacter(self))
+        _token.value.symbol[i++] = Lexer_pop(self);
 
     TokenList_add(self->tokens, _token, Lexer_getMetadata(self));
 }
@@ -239,6 +233,17 @@ static int Lexer_isNewline(Lexer *self)
     const char peek = Lexer_peek(self);
     return (peek == '\n') || (peek == '\r');
 }
+static int Lexer_isSymbolCharacter(Lexer *self)
+{
+    const char peek = Lexer_peek(self);
+    return (isalnum(peek) || strchr(SYMBOL_SET, peek));
+}   
+static int Lexer_isFirstSymbolCharacter(Lexer *self)
+{
+    const char peek = Lexer_peek(self);
+    return (isalpha(peek) || strchr(SYMBOL_SET, peek));
+}
+
 static Metadata Lexer_getMetadata(Lexer *self)
 {
     Metadata metadata = {self->row, self->colum};

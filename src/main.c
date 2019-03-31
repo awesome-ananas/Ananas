@@ -47,13 +47,20 @@ void Show_token(TokenNode *n)
 
 int main(int argc, const char *argv[])
 {
-    Lexer *lexer = Lexer_new("; The second Ananas program.\n(display \"This is ananas\")\n\t(define (neg x) (- 0 x))");
+    int i=0;
+    char c;
+    char input[0xFFFF] = {0, };
+    while((c = getchar()) != EOF)
+    {
+        input[i++] = c;
+    }
+
+    Lexer *lexer = Lexer_new(input);
     TokenNode *iter;
 
     Lexer_lex(lexer);
     for (iter = lexer->tokens->head; iter != NULL; iter = iter->next)
         Show_token(iter);
-
     Lexer_delete(lexer);
     return 0;
 }

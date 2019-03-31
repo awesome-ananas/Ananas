@@ -1,0 +1,15 @@
+(define (main)
+    (display "Hello Ananas!"))
+
+(define (the-complex-function x y)
+    (add x y))
+
+(define (add x y)
+    (if (= y 0)
+        x
+        (add (inc x) (dec) y)))
+
+(define (even? x)
+    (if (= (mod x 2) 0)
+        #t
+        #f))
