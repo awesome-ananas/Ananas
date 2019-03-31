@@ -10,6 +10,7 @@ typedef enum __TokenType
     TokenType_FLOATING,
     TokenType_STRING,
     TokenType_SYMBOL,
+    TokenType_BOOLEAN, /* #t #f */
     TokenType_LPARN, /* ( */
     TokenType_RPARN, /* ) */
     TokenType_CONS,  /* : */
@@ -19,6 +20,7 @@ typedef enum __TokenType
 
 typedef union __TokenValue {
     int integer;
+    int boolean;
     double floating;
     char string[MAX_STRING];
     char symbol[MAX_SYMBOL];

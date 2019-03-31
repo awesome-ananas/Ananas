@@ -21,6 +21,7 @@ typedef struct __TokenList
 
 TokenNode *TokenNode_new(TokenType _type, TokenValue _value, Metadata _metadata);
 void TokenNode_delete(TokenNode *node);
+void TokenNode_show(TokenNode node);
 
 TokenList *TokenList_new(void);
 void TokenList_delete(TokenList *list);

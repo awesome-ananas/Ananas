@@ -13,11 +13,12 @@ static const Token Token_CONS = {(enum __TokenType)TokenType_CONS, {0}};
 static const Token Token_LIST = {(enum __TokenType)TokenType_LIST, {0}};
 static const Token Token_EOF = {(enum __TokenType)TokenType_EOF, {0}};
 
-static const char *const SYMBOL_SET = "+-/*\%=?!_#";
+static const char *const SYMBOL_SET = "+-/*\%=?!_";
 
 static inline char Lexer_peek(Lexer *self);
 static inline char Lexer_pop(Lexer *self);
 static void Lexer_lexNumber(Lexer *self);
+static void Lexer_lexBoolean(Lexer *self);
 static void Lexer_lexString(Lexer *self);
 static void Lexer_lexSymbol(Lexer *self);
 static void Lexer_commentConsume(Lexer *self);
@@ -63,9 +64,8 @@ void Lexer_lex(Lexer *self)
     while ((peek = Lexer_peek(self)) != '\0')
     {
         if (peek == ';')
-        {
             Lexer_commentConsume(self);
-        }
+
         else if (peek == '(')
         {
             TokenList_add(self->tokens, Token_LPARN, Lexer_getMetadata(self));
@@ -91,29 +91,28 @@ void Lexer_lex(Lexer *self)
             TokenList_add(self->tokens, Token_EOF, Lexer_getMetadata(self));
             Lexer_pop(self);
         }
+        
         else if (Lexer_isWhitespace(peek))
-        {
             Lexer_spaceConsume(self);
-        }
+
         else if (Lexer_isNewline(peek))
-        {
             Lexer_newlineConsume(self);
-        }
+
         else if (isdigit(peek))
-        {
             Lexer_lexNumber(self);
-        }
+
+        else if (peek == '#')
+            Lexer_lexBoolean(self);
+
         else if (peek == '\"')
-        {
             Lexer_lexString(self);
-        }
+
         else if (Lexer_isFirstSymbolCharacter(peek))
-        {
             Lexer_lexSymbol(self);
-        }
+
         else
         {
-            fprintf(stderr, "unreconiged input: %c\n", peek);
+            fprintf(stderr, "\n\tunreconiged input: %c\n", peek);
             break;
         }
     }
@@ -126,7 +125,6 @@ static inline char Lexer_peek(Lexer *self)
 
 static char Lexer_pop(Lexer *self)
 {
-    putchar(self->code[self->index]);
     if (Lexer_isNewline(Lexer_peek(self)))
     {
         self->row++;
@@ -188,6 +186,28 @@ static void Lexer_lexNumber(Lexer *self)
 
     TokenList_add(self->tokens, token, metadata);
 }
+ static void Lexer_lexBoolean(Lexer *self)
+{
+    char c;
+    Token token = {0, };
+    Metadata metadata = Lexer_getMetadata(self);
+    token.type = TokenType_BOOLEAN;
+
+    Lexer_pop(self);
+    c = Lexer_pop(self);
+
+    if(c == 't')
+        token.value.boolean = 1;
+
+    else if(c == 'f')
+        token.value.boolean = 0;
+
+    else
+        fprintf(stderr, "Expected #t or #f, but #%c\n", c);
+    
+    TokenList_add(self->tokens, token, metadata);
+}
+
 static void Lexer_lexString(Lexer *self)
 {
     int i = 0;
