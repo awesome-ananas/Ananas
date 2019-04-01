@@ -7,11 +7,11 @@
 #include <ctype.h>
 #include <string.h>
 
-static const Token Token_LPARN = {(enum __TokenType)TokenType_LPARN, {0}};
-static const Token Token_RPARN = {(enum __TokenType)TokenType_RPARN, {0}};
-static const Token Token_CONS = {(enum __TokenType)TokenType_CONS, {0}};
-static const Token Token_LIST = {(enum __TokenType)TokenType_LIST, {0}};
-static const Token Token_EOF = {(enum __TokenType)TokenType_EOF, {0}};
+static const Token Token_LPARN = { (enum __TokenType) TokenType_LPARN, { 0 } };
+static const Token Token_RPARN = { (enum __TokenType) TokenType_RPARN, { 0 } };
+static const Token Token_CONS = { (enum __TokenType) TokenType_CONS, { 0 } };
+static const Token Token_LIST = { (enum __TokenType) TokenType_LIST, { 0 } };
+static const Token Token_EOF = { (enum __TokenType) TokenType_EOF, { 0 } };
 
 static const char *const SYMBOL_SET = "+-/*\%=?!_";
 
@@ -41,6 +41,7 @@ Lexer *Lexer_new(char *_code)
 
     lexer->row = 1;
     lexer->code = _code;
+
     return lexer;
 
 cleanup:
@@ -189,7 +190,7 @@ static void Lexer_lexNumber(Lexer *self)
  static void Lexer_lexBoolean(Lexer *self)
 {
     char c;
-    Token token = {0, };
+    Token token = { 0, };
     Metadata metadata = Lexer_getMetadata(self);
     token.type = TokenType_BOOLEAN;
 
@@ -212,7 +213,7 @@ static void Lexer_lexString(Lexer *self)
 {
     int i = 0;
     char c;
-    Token _token = {0, };
+    Token _token = { 0, };
     Metadata metadata = Lexer_getMetadata(self);
     _token.type = TokenType_STRING;
 
@@ -226,6 +227,7 @@ static void Lexer_lexString(Lexer *self)
 
     TokenList_add(self->tokens, _token, metadata);
 }
+
 static void Lexer_lexSymbol(Lexer *self)
 {
     int i = 0;
@@ -238,11 +240,13 @@ static void Lexer_lexSymbol(Lexer *self)
 
     TokenList_add(self->tokens, _token, metadata);
 }
+
 static void Lexer_spaceConsume(Lexer *self)
 {
     while (Lexer_isWhitespace(Lexer_peek(self)))
         Lexer_pop(self);
 }
+
 static void Lexer_newlineConsume(Lexer *self)
 {
     while (Lexer_isNewline(Lexer_peek(self)))
@@ -253,14 +257,17 @@ static inline int Lexer_isWhitespace(const char peek)
 {
     return (peek == ' ') || (peek == '\t') || (peek == '\v');
 }
+
 static inline int Lexer_isNewline(const char peek)
 {
     return (peek == '\n') || (peek == '\r');
 }
+
 static inline int Lexer_isSymbolCharacter(const char peek)
 {
     return (isalnum(peek) || strchr(SYMBOL_SET, peek));
-}   
+}
+
 static inline int Lexer_isFirstSymbolCharacter(const char peek)
 {
     return (isalpha(peek) || strchr(SYMBOL_SET, peek));
@@ -268,6 +275,6 @@ static inline int Lexer_isFirstSymbolCharacter(const char peek)
 
 static Metadata Lexer_getMetadata(Lexer *self)
 {
-    Metadata metadata = {self->row, self->colum};
+    Metadata metadata = { self->row, self->colum };
     return metadata;
 }
